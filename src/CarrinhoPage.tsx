@@ -10,6 +10,30 @@ export default function CarrinhoPage() {
     return acc + (precoNum || 0) * item.quantidade;
   }, 0);
 
+  async function handleCheckout() {
+    try {
+      const response = await fetch('/api/create-preference', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: itens
+        }),
+      });
+
+      const data = await response.json();
+      if (data.id) {
+        window.location.href = `https://www.mercadopago.com.br/checkout/v1/redirect?preference-id=${data.id}`;
+      } else {
+        alert('Erro ao criar preferência de pagamento');
+      }
+    } catch (error) {
+      console.error('Erro ao processar checkout:', error);
+      alert('Erro ao processar pagamento');
+    }
+  }
+
   return (
     <div className="max-w-2xl mx-auto py-12 px-3 min-h-[66vh] text-[#2e2c45]">
       <h1 className="text-3xl font-extrabold mb-6 flex items-center gap-3">
@@ -63,7 +87,12 @@ export default function CarrinhoPage() {
               <span className="font-bold text-[#ff7d1a] text-xl">R$ {total.toFixed(2)}</span>
             </div>
             <button onClick={limpar} className="text-sm text-[#6742db] hover:underline mr-auto">Esvaziar carrinho</button>
-            <button className="bg-gradient-to-r from-[#ff7d1a] to-[#ff9f37] hover:from-[#db6817] hover:to-[#ff7d1a] px-6 py-3 rounded-lg text-white font-extrabold tracking-wide shadow text-lg w-full">Finalizar compra</button>
+            <button 
+              onClick={handleCheckout}
+              className="bg-gradient-to-r from-[#ff7d1a] to-[#ff9f37] hover:from-[#db6817] hover:to-[#ff7d1a] px-6 py-3 rounded-lg text-white font-extrabold tracking-wide shadow text-lg w-full"
+            >
+              Finalizar compra
+            </button>
           </div>
         </>
       )}
