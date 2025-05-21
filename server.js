@@ -1,9 +1,7 @@
-import express from 'express';
-import cors from 'cors';
-import { MercadoPagoConfig, Preference } from 'mercadopago';
-import dotenv from 'dotenv';
-
-dotenv.config();
+const express = require('express');
+const cors = require('cors');
+const { MercadoPagoConfig, Preference } = require('mercadopago');
+require('dotenv').config();
 
 const app = express();
 app.use(cors());
